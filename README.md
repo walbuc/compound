@@ -1,4 +1,4 @@
-## Available Scripts
+## Compound project Description:
 
 This project has been deployed to Netlify and can be accessed in
 the following url:
