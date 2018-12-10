@@ -49,8 +49,8 @@ router.post('/', validate(), (req, res) => {
         },
       },
     )
-    .then(res => {
-      if (res.data.success) {
+    .then(result => {
+      if (result.data.success) {
         s3.getObject(S3Params, function(err, data) {
           if (err)
             return res
