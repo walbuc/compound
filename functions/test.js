@@ -3,7 +3,7 @@ const serverless = require('serverless-http')
 const app = express()
 const bodyParser = require('body-parser')
 const validator = require('express-validator')
-const {body, validationResult} = require('express-validator/check')
+const {check, validationResult} = require('express-validator/check')
 const AWS = require('aws-sdk')
 const keys = require('../config/keys')
 
@@ -22,18 +22,19 @@ app.use(bodyParser.json())
 app.use(validator())
 
 const validate = () => [
-  body('firstName', 'first name doesnt exists').exists(),
-  body('lastName', 'first name doesnt exists').exists(),
-  body('email', 'Invalid email')
+  check('firstName', 'first name doesnt exists').exists(),
+  check('lastName', 'first name doesnt exists').exists(),
+  check('email', 'Invalid email')
     .exists()
     .isEmail(),
 ]
 
 const emailAlreadyExists = (data, email) => data[email]
 
-router.post('/', (req, res) => {
-  // const errors = validationResult(req)
-  // if (!errors.isEmpty()) return res.status(422).json({errors: errors.array()})
+router.post('/', validate(), (req, res) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) return res.status(422).json({errors: errors.array()})
+
   const {firstName, lastName, email} = req.body
   s3.getObject(S3Params, function(err, data) {
     if (err)
@@ -59,7 +60,6 @@ router.post('/', (req, res) => {
         ContentType: 'application/json',
       },
       function(err, data) {
-        console.log(JSON.stringify(err) + ' ' + JSON.stringify(data))
         res.status(200).json({message: 'Your information has been saved.'})
       },
     )
