@@ -6,8 +6,8 @@ const validator = require('express-validator')
 const {body, validationResult} = require('express-validator/check')
 const AWS = require('aws-sdk')
 
-const accessKeyId = 'AKIAIE5JAWPL6OWE2ODA'
-const secretAccessKey = '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'
+const accessKeyId = ''
+const secretAccessKey = ''
 
 const s3 = new AWS.S3({
   accessKeyId,
