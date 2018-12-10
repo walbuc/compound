@@ -5,13 +5,11 @@ const bodyParser = require('body-parser')
 const validator = require('express-validator')
 const {body, validationResult} = require('express-validator/check')
 const AWS = require('aws-sdk')
-
-const accessKeyId = ''
-const secretAccessKey = ''
+const keys = require('../config/keys')
 
 const s3 = new AWS.S3({
-  accessKeyId,
-  secretAccessKey,
+  accessKeyId: keys.accessKeyId,
+  secretAccessKey: keys.secretAccessKey,
 })
 
 const S3Params = {
