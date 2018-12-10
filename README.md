@@ -1,3 +1,28 @@
+## Available Scripts
+
+This project has been deployed to Netlify and can be accessed in
+the following url:
+
+(https://sharp-lamport-4735b5.netlify.com/)
+
+This form uses Google invisible recaptcha api.
+There is validation for clien side and also server side.
+
+The information is saved in Amazon S3 datastore in a JSON file.
+File content can be accessed in following url.
+
+(https://s3-sa-east-1.amazonaws.com/data-store-blog/users/users.json)
+
+If the email is already saved, a 422 unprocessable entity status is returned to the client side with an 'email already exists' message.
+
+If you want to running it locally:
+
+### `yarn run`
+
+### `yarn run start:lambda`
+
+The First comman runs the react application and the second command runs the netlify lambda function for testing purposes.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -42,4 +67,5 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
 # compound
