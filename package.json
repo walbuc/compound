@@ -27,7 +27,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "prod": "yarn run build: yarn run build:lambda",
+    "prod": "yarn run build; yarn run build:lambda",
     "eject": "react-scripts eject",
     "start:lambda": "netlify-lambda serve functions",
     "build:lambda": "netlify-lambda build functions"
