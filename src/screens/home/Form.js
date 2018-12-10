@@ -4,6 +4,7 @@ import {jsx} from '@emotion/core'
 import {Formik} from 'formik'
 import styled from '@emotion/styled'
 import axios from 'axios'
+import Recaptcha from 'react-google-invisible-recaptcha'
 import {
   Input,
   Text,
@@ -36,14 +37,24 @@ SubmitButton.defaultProps = {type: 'submit', children: 'Submit!'}
 
 class Form extends Component {
   state = {error: '', success: ''}
-
-  submit = ({firstName, lastName, email}) => {
+  values = {}
+  submit = () => {
+    this.recaptcha.execute()
+  }
+  onResolved = () => {
+    const {firstName, lastName, email} = this.values
     axios
-      .post('/.netlify/functions/test', {firstName, lastName, email})
+      .post('/.netlify/functions/test', {
+        firstName,
+        lastName,
+        email,
+        token: this.recaptcha.getResponse(),
+      })
       .then(res => this.setState({success: res.data.message, error: ''}))
-      .catch(err =>
-        this.setState({error: err.response.data.error, success: ''}),
-      )
+      .catch(err => {
+        this.setState({error: err.response.data.error, success: ''})
+        this.recaptcha.reset()
+      })
   }
   render() {
     return (
@@ -63,56 +74,64 @@ class Form extends Component {
             handleChange,
             handleBlur,
             handleSubmit,
-          }) => (
-            <form
-              css={{
-                display: 'flex',
-                flexDirection: 'column',
-                maxWidth: 330,
-                margin: 'auto',
-              }}
-              onSubmit={handleSubmit}
-            >
-              <Section>
-                <Input
-                  type="email"
-                  name="email"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.email}
-                  placeholder={'email'}
-                />
-                <FieldError>
-                  {errors.email && touched.email && errors.email}
-                </FieldError>
-              </Section>
-              <Input
-                type="text"
-                name="firstName"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.firstName}
-                placeholder={'first name'}
-              />
-              <FieldError>
-                {errors.firstName && touched.firstName && errors.firstName}
-              </FieldError>
-              <Section>
+          }) => {
+            this.values = values
+            return (
+              <form
+                css={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  maxWidth: 330,
+                  margin: 'auto',
+                }}
+                onSubmit={handleSubmit}
+              >
+                <Section>
+                  <Input
+                    type="email"
+                    name="email"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.email}
+                    placeholder={'email'}
+                  />
+                  <FieldError>
+                    {errors.email && touched.email && errors.email}
+                  </FieldError>
+                </Section>
                 <Input
                   type="text"
-                  name="lastName"
+                  name="firstName"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.lastName}
-                  placeholder={'last name'}
+                  value={values.firstName}
+                  placeholder={'first name'}
                 />
                 <FieldError>
-                  {errors.lastName && touched.lastName && errors.lastName}
+                  {errors.firstName && touched.firstName && errors.firstName}
                 </FieldError>
-              </Section>
-              <SubmitButton />
-            </form>
-          )}
+                <Section>
+                  <Input
+                    type="text"
+                    name="lastName"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.lastName}
+                    placeholder={'last name'}
+                  />
+                  <FieldError>
+                    {errors.lastName && touched.lastName && errors.lastName}
+                  </FieldError>
+                </Section>
+                <SubmitButton />
+                <Recaptcha
+                  ref={ref => (this.recaptcha = ref)}
+                  sitekey="6Ldk8X8UAAAAADG2yifCKf5VcRAPsx7OCKSEihfs"
+                  onResolved={values => this.onResolved(values)}
+                />
+              </form>
+            )
+          }}
         </Formik>
       </IsolatedContainer>
     )
