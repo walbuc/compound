@@ -36,6 +36,7 @@ router.post('/', validate(), (req, res) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) return res.status(422).json({errors: errors.array()})
   const {firstName, lastName, email, token} = req.body
+
   axios
     .post(
       `https://www.google.com/recaptcha/api/siteverify?secret=${
@@ -81,7 +82,9 @@ router.post('/', validate(), (req, res) => {
           )
         })
       } else {
-        res.status(422).json({error: 'Captcha verification failed. Try again.'})
+        return res
+          .status(422)
+          .json({error: 'Captcha verification failed. Try again.'})
       }
     })
     .catch(err => {
