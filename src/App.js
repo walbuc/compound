@@ -1,28 +1,39 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import './App.css'
+import ErrorBoundary from 'react-error-boundary'
+import ThemeProvider from './shared/theme-provider'
+import {IsolatedContainer, LoadingMessagePage} from './shared/pattern'
+import loadable from 'react-loadable'
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+function LoadingFallback({error, pastDelay}) {
+  if (error) {
+    // ErrorBoundary will catch this
+    throw error
   }
+  return <LoadingMessagePage>Loading Application</LoadingMessagePage>
 }
 
-export default App;
+const Form = loadable({
+  loader: () => import('./screens/home/Form'),
+  loading: LoadingFallback,
+})
+
+function ErrorFallback({error}) {
+  return (
+    <IsolatedContainer>
+      <p>There was an error</p>
+      <pre style={{maxWidth: 700}}>{JSON.stringify(error, null, 2)}</pre>
+    </IsolatedContainer>
+  )
+}
+function App() {
+  return (
+    <ThemeProvider>
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <Form />
+      </ErrorBoundary>
+    </ThemeProvider>
+  )
+}
+
+export default App
