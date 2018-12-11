@@ -33,7 +33,8 @@ Error.defaultProps = {size: 'subheading'}
 Title.defaultProps = {size: 'superheading'}
 FieldError.defaultProps = {size: 'estandar'}
 Success.defaultProps = {size: 'subheading'}
-LoadingMessage.defaultPros = {size: 'subheading'}
+LoadingMessage.defaultProps = {size: 'subheading'}
+
 const SubmitButton = styled(PrimaryButton)({width: '50%', alignSelf: 'center'})
 SubmitButton.defaultProps = {type: 'submit', children: 'Submit!'}
 
@@ -75,6 +76,9 @@ class Form extends Component {
         <Title>Send your Information!</Title>
         {this.state.error && <Error>{this.state.error}</Error>}
         {this.state.success && <Success>{this.state.success}</Success>}
+        {this.state.isSubmiting && (
+          <LoadingMessage>Sending information.</LoadingMessage>
+        )}
         <Formik
           validate={validate}
           onSubmit={this.submit}
@@ -90,64 +94,59 @@ class Form extends Component {
           }) => {
             this.values = values
             return (
-              <div>
-                {this.state.isSubmiting && (
-                  <LoadingMessage>Sending information.</LoadingMessage>
-                )}
-                <form
-                  css={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    maxWidth: 330,
-                    margin: 'auto',
-                  }}
-                  onSubmit={handleSubmit}
-                >
-                  <Section>
-                    <Input
-                      type="email"
-                      name="email"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.email}
-                      placeholder={'email'}
-                    />
-                    <FieldError>
-                      {errors.email && touched.email && errors.email}
-                    </FieldError>
-                  </Section>
+              <form
+                css={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  maxWidth: 330,
+                  margin: 'auto',
+                }}
+                onSubmit={handleSubmit}
+              >
+                <Section>
                   <Input
-                    type="text"
-                    name="firstName"
+                    type="email"
+                    name="email"
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    value={values.firstName}
-                    placeholder={'first name'}
+                    value={values.email}
+                    placeholder={'email'}
                   />
                   <FieldError>
-                    {errors.firstName && touched.firstName && errors.firstName}
+                    {errors.email && touched.email && errors.email}
                   </FieldError>
-                  <Section>
-                    <Input
-                      type="text"
-                      name="lastName"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.lastName}
-                      placeholder={'last name'}
-                    />
-                    <FieldError>
-                      {errors.lastName && touched.lastName && errors.lastName}
-                    </FieldError>
-                  </Section>
-                  <SubmitButton disabled={this.state.isSubmitting} />
-                  <Recaptcha
-                    ref={ref => (this.recaptcha = ref)}
-                    sitekey="6Ldk8X8UAAAAADG2yifCKf5VcRAPsx7OCKSEihfs"
-                    onResolved={values => this.onResolved(values)}
+                </Section>
+                <Input
+                  type="text"
+                  name="firstName"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.firstName}
+                  placeholder={'first name'}
+                />
+                <FieldError>
+                  {errors.firstName && touched.firstName && errors.firstName}
+                </FieldError>
+                <Section>
+                  <Input
+                    type="text"
+                    name="lastName"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.lastName}
+                    placeholder={'last name'}
                   />
-                </form>
-              </div>
+                  <FieldError>
+                    {errors.lastName && touched.lastName && errors.lastName}
+                  </FieldError>
+                </Section>
+                <SubmitButton disabled={this.state.isSubmitting} />
+                <Recaptcha
+                  ref={ref => (this.recaptcha = ref)}
+                  sitekey="6Ldk8X8UAAAAADG2yifCKf5VcRAPsx7OCKSEihfs"
+                  onResolved={values => this.onResolved(values)}
+                />
+              </form>
             )
           }}
         </Formik>
